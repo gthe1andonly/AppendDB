@@ -14,7 +14,13 @@ class StorageEngine:
         
     def db_get(self, db_name, item_key):
         filename = self.path + db_name
-        pass
+        with open(filename, 'r') as csvfile:
+            reader = csv.reader(csvfile, delimiter=',')
+            for row in reversed(list(reader)):
+                if row[0] == item_key:
+                    return row
+            
+        return -1
 
     def db_set(self, db_name, item):
         filename = self.path + db_name
@@ -34,3 +40,5 @@ if __name__ == "__main__":
     storageEngine.create_db("testdb.csv", ["col1", "col2"])
     storageEngine.db_set("testdb.csv", {"col1": "furstrow", "col2": "secondrow"})
     storageEngine.db_set("testdb.csv", {"col1": "2row", "col2": "3drow"})
+    item = storageEngine.db_get("testdb.csv", "col1")
+    print("Result: ", item)
