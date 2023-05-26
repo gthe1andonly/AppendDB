@@ -17,7 +17,7 @@ class StorageEngine:
         with open(filename, 'r') as csvfile:
             reader = csv.reader(csvfile, delimiter=',')
             for row in reversed(list(reader)):
-                if row[0] == item_key:
+                if row[0] == item_key and row[1] != "Deleted":
                     return row
             
         return -1
@@ -32,7 +32,14 @@ class StorageEngine:
             
 
     def db_remove(self, db_name, item_key):
-        pass
+        filename = self.path + db_name
+        headers = [item_key]
+        with open(filename, 'a', newline = '') as csvfile:
+            spamwriter = csv.writer(csvfile, delimiter=' ',
+                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
+            spamwriter.writerow([item_key, 'Deleted'])
+            # There has got to be a more elegant way to write this
+        print(item_key, " has been deleted")
     
     
 if __name__ == "__main__":
